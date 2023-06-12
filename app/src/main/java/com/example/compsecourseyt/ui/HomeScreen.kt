@@ -24,10 +24,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -71,6 +71,7 @@ import com.example.compsecourseyt.ui.theme.Red2
 import com.example.compsecourseyt.ui.theme.Red3
 import com.example.compsecourseyt.ui.theme.TextWhite
 
+
 @Composable
 fun HomeScreen(
     salam: String,
@@ -105,9 +106,10 @@ fun HomeScreen(
                     Feature(
                         title = "Night island",
                         R.drawable.ic_headphone,
-                        OrangeYellow1,
+                        OrangeYellow3,
                         OrangeYellow2,
-                        OrangeYellow3
+                        OrangeYellow1,
+
                     ),
                     Feature(
                         title = "Calming sounds",
@@ -239,7 +241,7 @@ fun GreetingSection(
                 color = TextWhite
             )
             Text(
-                "$greeting",
+                greeting,
                 style = MaterialTheme.typography.headlineMedium
             )
             Text(
