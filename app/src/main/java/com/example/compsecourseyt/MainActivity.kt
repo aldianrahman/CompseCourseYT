@@ -8,13 +8,26 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.compsecourseyt.ui.HomeScreen
 import com.example.compsecourseyt.ui.theme.MeditationUIYouTubeTheme
 import com.google.gson.JsonObject
 import com.koushikdutta.ion.Ion
+import kotlinx.coroutines.delay
 import java.util.Calendar
 
 
@@ -22,42 +35,102 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val context = LocalContext.current
-            val TAG: String = "JSON_MONGODB"
-            val API_KEY: String = "6438f8553f4da8ec3781253b"
-            val findOne: String = "/action/findOne"
-            val url =
-                "https://ap-southeast-1.aws.data.mongodb-api.com/app/data-oukpf/endpoint/data/v1$findOne"
-            val sendObject = JsonObject()
-            var solution = ""
+            App()
+        }
+    }
+}
 
-            sendObject.addProperty("dataSource", "Cluster0")
-            sendObject.addProperty("database", "todo")
-            sendObject.addProperty("collection", "traning")
+@Composable
+fun SplashScreen(navigateToNextScreen: () -> Unit) {
+    LaunchedEffect(key1 = true) {
+        delay(5000) // Menunggu 3 detik sebelum melanjutkan ke layar berikutnya
+        navigateToNextScreen()
+    }
+
+    // Tampilan SplashScreen
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = "Splash Screen",
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.Black
+        )
+    }
+}
+
+@Composable
+fun App() {
+
+    val context = LocalContext.current
+    val TAG: String = "JSON_MONGODB"
+    val API_KEY: String = "6438f8553f4da8ec3781253b"
+    val findOne: String = "/action/findOne"
+    val url =
+        "https://ap-southeast-1.aws.data.mongodb-api.com/app/data-oukpf/endpoint/data/v1$findOne"
+    val sendObject = JsonObject()
+    var solution = ""
+    var email = ""
+
+    sendObject.addProperty("dataSource", "Cluster0")
+    sendObject.addProperty("database", "todo")
+    sendObject.addProperty("collection", "traning")
 
 
-            Ion.with(context)
-                .load(url)
-                .setHeader("Content-Type", "application/json")
-                .setHeader("Access-Control-Request-Headers", "*")
-                .setHeader("Accept", "application/json")
-                .setJsonObjectBody(sendObject)
-                .asJsonObject()
-                .setCallback { e, result ->
-                    if (e != null) {
-                        Log.i(TAG, "getApiMongodb Error: $e")
-                    } else {
-                        Log.i(TAG, "getApiMongodb Success: $result")
-                        if (result != null) {
-                            val document = result.getAsJsonObject("document")
-                            val solutions = document.getAsJsonObject("solutions")
-                            solution = solutions["solution"].asString
-                            Log.i(TAG, "Solution: $solution")
-                            Toast.makeText(context, ""+solution, Toast.LENGTH_SHORT).show()
-                        }
-                    }
+    Ion.with(context)
+        .load(url)
+        .setHeader("Content-Type", "application/json")
+        .setHeader("Access-Control-Request-Headers", "*")
+        .setHeader("Accept", "application/json")
+        .setJsonObjectBody(sendObject)
+        .asJsonObject()
+        .setCallback { e, result ->
+            if (e != null) {
+                Log.i(TAG, "getApiMongodb Error: $e")
+            } else {
+                Log.i(TAG, "getApiMongodb Success: $result")
+                if (result != null) {
+                    val document = result.getAsJsonObject("document")
+                    val solutions = document.getAsJsonObject("solutions")
+                    solution = solutions["solution"].asString
+                    Log.i(TAG, "Solution: $solution")
                 }
-            MainPreview()
+            }
+        }
+
+    Ion.with(context)
+        .load(url)
+        .setHeader("Content-Type", "application/json")
+        .setHeader("Access-Control-Request-Headers", "*")
+        .setHeader("Accept", "application/json")
+        .setJsonObjectBody(sendObject)
+        .asJsonObject()
+        .setCallback { e, result ->
+            if (e != null) {
+                Log.i(TAG, "getApiMongodb Error: $e")
+            } else {
+                Log.i(TAG, "getApiMongodb Success: $result")
+                if (result != null) {
+                    val document = result.getAsJsonObject("document")
+                    val solutions = document.getAsJsonObject("solutions")
+                    email = solutions["email"].asString
+                    Log.i(TAG, "Solution: $solution")
+                }
+            }
+        }
+
+    val navController = rememberNavController()
+
+    NavHost(navController = navController, startDestination = "splash") {
+        composable("splash") {
+            SplashScreen(navigateToNextScreen = { navController.navigate("main") })
+        }
+        composable("main") {
+            MainPreview(solution,email)
         }
     }
 }
@@ -65,11 +138,13 @@ class MainActivity : ComponentActivity() {
 
 
 
-
 @SuppressLint("SuspiciousIndentation")
-@Preview(showBackground = true)
+//@Preview(showBackground = true)
 @Composable
-fun MainPreview() {
+fun MainPreview(
+    data: String,
+    email: String
+) {
     MeditationUIYouTubeTheme {
 
         val calendar = Calendar.getInstance()
@@ -114,7 +189,7 @@ fun MainPreview() {
         val harapan = wish
 
 
-            HomeScreen(salam,harapan,"$dayOfWeekString, $date "+monthNames[month]+" $year")
+            HomeScreen(salam,harapan,"$dayOfWeekString, $date "+monthNames[month]+" $year",data,email)
 
     }
 

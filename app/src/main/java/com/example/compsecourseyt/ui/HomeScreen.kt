@@ -62,7 +62,6 @@ import com.example.compsecourseyt.ui.theme.Green1
 import com.example.compsecourseyt.ui.theme.LightGreen1
 import com.example.compsecourseyt.ui.theme.LightGreen2
 import com.example.compsecourseyt.ui.theme.LightGreen3
-import com.example.compsecourseyt.ui.theme.LightRed
 import com.example.compsecourseyt.ui.theme.OrangeYellow1
 import com.example.compsecourseyt.ui.theme.OrangeYellow2
 import com.example.compsecourseyt.ui.theme.OrangeYellow3
@@ -76,7 +75,9 @@ import com.example.compsecourseyt.ui.theme.TextWhite
 fun HomeScreen(
     salam: String,
     harapan: String,
-    date: String
+    date: String,
+    data: String,
+    email: String
 ){
     Box(
         modifier = Modifier
@@ -86,7 +87,7 @@ fun HomeScreen(
         Column {
             GreetingSection(salam,harapan,date)
             ChipSection(chips = listOf("Sweet Sleep","Insomnia","Depression","Rest After Working"))
-            CurrentMeditation()
+            CurrentMeditation(data,email)
             FeatureSection(
                 features = listOf(
                     Feature(
@@ -295,7 +296,8 @@ fun ChipSection(
 
 @Composable
 fun CurrentMeditation(
-    color : Color = LightRed
+    data: String,
+    email: String
 ){
     val contex = LocalContext.current
 //    BoxWithConstraints(
@@ -394,7 +396,7 @@ fun CurrentMeditation(
                 )
         ) {
             Text(
-                text = "Daily Thought",
+                text = email,
                 style = MaterialTheme.typography.headlineMedium.copy(
                     shadow = Shadow(
                         color = Color.Gray,
@@ -404,7 +406,7 @@ fun CurrentMeditation(
                 )
             )
             Text(
-                "Meditation 3-10 min",
+                text = data,
                 color = TextWhite,
                 style = MaterialTheme.typography.bodyLarge.copy(
                     shadow = Shadow(
