@@ -1,5 +1,3 @@
-@file:Suppress("CAST_NEVER_SUCCEEDS")
-
 package com.example.compsecourseyt.ui
 
 import android.widget.Toast
@@ -16,14 +14,11 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -77,14 +72,18 @@ import com.example.compsecourseyt.ui.theme.Red3
 import com.example.compsecourseyt.ui.theme.TextWhite
 
 @Composable
-fun HomeScreen(){
+fun HomeScreen(
+    salam: String,
+    harapan: String,
+    date: String
+){
     Box(
         modifier = Modifier
             .background(DeepBlue)
             .fillMaxSize()
     ){
         Column {
-            GreetingSection()
+            GreetingSection(salam,harapan,date)
             ChipSection(chips = listOf("Sweet Sleep","Insomnia","Depression","Rest After Working"))
             CurrentMeditation()
             FeatureSection(
@@ -156,6 +155,7 @@ fun BottomMenu(
     var selectedItemIndex by remember {
         mutableStateOf(initialSelectedItemIndex)
     }
+    val context = LocalContext.current
     Row(
         horizontalArrangement = Arrangement.SpaceAround,
         verticalAlignment = Alignment.CenterVertically,
@@ -173,6 +173,7 @@ fun BottomMenu(
                 inactiveTextColor = inactiveTextColor
             ) {
                 selectedItemIndex = index
+                Toast.makeText(context, ""+item.title, Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -217,27 +218,35 @@ fun BottomMenuItem(
 
 @Composable
 fun GreetingSection(
-    name :String = "Aldian Rahman"
+    greeting: String,
+    wish: String,
+    date: String
 ){
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(15.dp)
+            .padding(vertical = 15.dp, horizontal = 15.dp)
     ){
         Column(
             verticalArrangement = Arrangement.Center,
 
         ) {
             Text(
-                "Good Morning, $name",
+                date,
+                style = MaterialTheme.typography.bodySmall,
+                color = TextWhite
+            )
+            Text(
+                "$greeting",
                 style = MaterialTheme.typography.headlineMedium
             )
             Text(
-                "We Wish You Have Good Day!",
+                wish,
                 style = MaterialTheme.typography.bodyLarge
             )
+
         }
         Icon(
             painter = painterResource(R.drawable.ic_search),
@@ -255,6 +264,7 @@ fun ChipSection(
     var selectedChipIndex by remember {
         mutableStateOf(0)
     }
+    val context = LocalContext.current
     LazyRow {
         items(chips.size){
             Box(
@@ -263,6 +273,7 @@ fun ChipSection(
                     .padding(start = 15.dp, top = 15.dp, bottom = 15.dp)
                     .clickable {
                         selectedChipIndex = it
+                        Toast.makeText(context, ""+chips[selectedChipIndex], Toast.LENGTH_SHORT).show()
                     }
                     .clip(RoundedCornerShape(10.dp))
                     .background(
@@ -428,7 +439,7 @@ fun FeatureSection(
         Text(
             "Features",
             style = MaterialTheme.typography.headlineLarge,
-            modifier = Modifier.padding(15.dp)
+            modifier = Modifier.padding(vertical = 5.dp, horizontal = 15.dp)
         )
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
@@ -450,6 +461,7 @@ fun FeatureSection(
 fun FratureItem(
     feature: Feature
 ){
+    val contex = LocalContext.current
     BoxWithConstraints(
         modifier = Modifier
             .padding(7.5.dp)
@@ -534,7 +546,7 @@ fun FratureItem(
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
                     .clickable {
-                    //Handle the Click
+                        Toast.makeText(contex, ""+feature.title, Toast.LENGTH_SHORT).show()
                 }
                     .align(Alignment.BottomEnd)
                     .clip(RoundedCornerShape(10.dp))
