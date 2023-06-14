@@ -41,9 +41,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.example.compsecourseyt.BottomMenuContent
 import com.example.compsecourseyt.Feature
 import com.example.compsecourseyt.R
+import com.example.compsecourseyt.Screen
 import com.example.compsecourseyt.standardQuadFromTo
 import com.example.compsecourseyt.ui.theme.AquaBlue
 import com.example.compsecourseyt.ui.theme.Beige1
@@ -77,7 +80,10 @@ fun HomeScreen(
     harapan: String,
     date: String,
     data: String,
-    email: String
+    email: String,
+    stringButton: List<String>,
+    stringFeature: MutableList<String>,
+    navController: NavHostController
 ){
     Box(
         modifier = Modifier
@@ -86,26 +92,26 @@ fun HomeScreen(
     ){
         Column {
             GreetingSection(salam,harapan,date)
-            ChipSection(chips = listOf("Sweet Sleep","Insomnia","Depression","Rest After Working"))
+            ChipSection(chips = stringButton)
             CurrentMeditation(data,email)
             FeatureSection(
                 features = listOf(
                     Feature(
-                        title = "Sleep meditation",
+                        title = stringFeature[0],
                         R.drawable.ic_headphone,
                         BlueViolet1,
                         BlueViolet2,
                         BlueViolet3
                     ),
                     Feature(
-                        title = "Tips for sleeping",
+                        title = stringFeature[1],
                         R.drawable.ic_videocam,
                         LightGreen1,
                         LightGreen2,
                         LightGreen3
                     ),
                     Feature(
-                        title = "Night island",
+                        title = stringFeature[2],
                         R.drawable.ic_headphone,
                         OrangeYellow3,
                         OrangeYellow2,
@@ -113,21 +119,21 @@ fun HomeScreen(
 
                     ),
                     Feature(
-                        title = "Calming sounds",
+                        title = stringFeature[3],
                         R.drawable.ic_headphone,
                         Beige1,
                         Beige2,
                         Beige3
                     ),
                     Feature(
-                        title = "Night island",
+                        title = stringFeature[4],
                         R.drawable.ic_headphone,
                         Red1,
                         Red2,
                         Red3
                     ),
                     Feature(
-                        title = "Calming sounds",
+                        title = stringFeature[5],
                         R.drawable.ic_headphone,
                         Blue1,
                         Blue2,
@@ -136,13 +142,16 @@ fun HomeScreen(
                 )
             )
         }
-        BottomMenu(items = listOf(
+        BottomMenu(
+            items = listOf(
             BottomMenuContent("Home", R.drawable.ic_home),
             BottomMenuContent("Meditate", R.drawable.ic_bubble),
             BottomMenuContent("Sleep", R.drawable.ic_moon),
             BottomMenuContent("Music", R.drawable.ic_music),
             BottomMenuContent("Profile", R.drawable.ic_profile),
-        ), modifier = Modifier.align(Alignment.BottomCenter))
+        ), modifier = Modifier.align(Alignment.BottomCenter)
+        , navController = navController
+        )
     }
 }
 
@@ -153,12 +162,12 @@ fun BottomMenu(
     activeHighlightColor: Color = ButtonBlue,
     activeTextColor: Color = Color.White,
     inactiveTextColor: Color = AquaBlue,
-    initialSelectedItemIndex: Int = 0
+    initialSelectedItemIndex: Int = 0,
+    navController: NavHostController?
 ) {
     var selectedItemIndex by remember {
         mutableStateOf(initialSelectedItemIndex)
     }
-    val context = LocalContext.current
     Row(
         horizontalArrangement = Arrangement.SpaceAround,
         verticalAlignment = Alignment.CenterVertically,
@@ -176,7 +185,13 @@ fun BottomMenu(
                 inactiveTextColor = inactiveTextColor
             ) {
                 selectedItemIndex = index
-                Toast.makeText(context, ""+item.title, Toast.LENGTH_SHORT).show()
+                if (selectedItemIndex == 0){
+                    navController?.navigate(Screen.MainScreen.route)
+                }else if (selectedItemIndex == 1){
+                    navController?.navigate(Screen.SecondScreen.withArgs(selectedItemIndex.toString()))
+                }else if (selectedItemIndex == 2){
+                    navController?.navigate(Screen.SplashScreen.route)
+                }
             }
         }
     }
